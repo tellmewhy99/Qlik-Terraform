@@ -1,0 +1,17 @@
+<script>
+cd C:\
+mkdir QV-Install
+
+ECHO cd C:\QV-Install >> C:\QV-Install\QVInstall.bat
+ECHO curl https://da3hntz84uekx.cloudfront.net/qlikview/12.40/124020100/_MSI/QlikViewServer_x64Setup.exe --output QlikViewServer_x64Setup.exe >> C:\QV-Install\QVInstall.bat
+ECHO QlikViewServer_x64Setup.exe /s /x /b"C:\QV-Install" /v"/qn" >> C:\QV-Install\QVInstall.bat
+ECHO timeout 30 >> C:\QV-Install\QVInstall.bat
+ECHO msiexec /i QlikViewServerx64.msi ADDLOCAL="ManagementService,DistributionService,DirectoryServiceConnector" /L*v log.txt /qn+ >> C:\QV-Install\QVInstall.bat
+ECHO schtasks /Delete /TN "QVInstall" /f >> C:\QV-Install\QVInstall.bat
+
+schtasks /create /tn "QVInstall" /sc onstart /delay 0000:30 /rl highest /ru system /tr "C:\QV-Install\QVInstall.bat"
+
+netdom.exe join %computername% /domain:qlikview.com /UserD:qlik\administrator /PasswordD:Password1234!
+
+shutdown /r
+</script>
